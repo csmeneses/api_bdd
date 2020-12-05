@@ -59,9 +59,11 @@ def check_mid(mid):
         return False
 
 
-@app.route("/", methods=['GET'])
+@app.route("/")
 def home():
-    return 'Hello World'
+    query = usuarios.find({}, {"_id": 0})
+    jsoneada = json.jsonify(list(query))
+    return jsoneada
 
 
 @app.route("/users", methods=['GET'])
