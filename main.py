@@ -61,9 +61,9 @@ def check_mid(mid):
 
 @app.route("/")
 def home():
-    return '''Sueños de niñez 
-        Convertir alguna vez
-        Un gol a estadio lleno,
+    return '''Sueños de niñez, 
+        convertir alguna vez
+        un gol a estadio lleno,
         eludiendo al portero.
 
         En casa faltaba el pan
@@ -71,9 +71,9 @@ def home():
         y nunca dejo de soñar
         con algún día ser un crack.
 
-        Sueños de niñez
-        Pichangas del barrio
-        Cara sucia sudor y barro
+        Sueños de niñez,
+        pichangas del barrio,
+        cara sucia sudor y barro
         (Sudor y barro )...'''
 
 
