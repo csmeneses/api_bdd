@@ -246,7 +246,7 @@ def delete_message(id):
     return json.jsonify({"exito": True})
 
 
-@app.route("/user_id/", methods=['GET'])
+@app.route("/user_id", methods=['GET'])
 def get_user_id():
 
     argumentos = request.args
