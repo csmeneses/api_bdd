@@ -61,9 +61,20 @@ def check_mid(mid):
 
 @app.route("/")
 def home():
-    query = usuarios.find({}, {"_id": 0})
-    jsoneada = json.jsonify(list(query))
-    return jsoneada
+    return '''Sueños de niñez 
+        Convertir alguna vez
+        Un gol a estadio lleno,
+        eludiendo al portero.
+
+        En casa faltaba el pan
+        a veces faltaba el té
+        y nunca dejo de soñar
+        con algún día ser un crack.
+
+        Sueños de niñez
+        Pichangas del barrio
+        Cara sucia sudor y barro
+        (Sudor y barro )...'''
 
 
 @app.route("/users", methods=['GET'])
