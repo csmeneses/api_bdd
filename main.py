@@ -59,6 +59,11 @@ def check_mid(mid):
         return False
 
 
+@app.route("/", methods=['GET'])
+def home():
+    return 'Hello World'
+
+
 @app.route("/users", methods=['GET'])
 def get_users():
     query = usuarios.find({}, {"_id": 0})
