@@ -257,5 +257,13 @@ def get_user_id():
     return json.jsonify(list(user)[0]["uid"])
 
 
+@app.route("/messages_receptant", methods=['GET'])
+def get_messages_receptant():
+    uid = int(request.args['id'])
+    query = mensajes.find({"receptant": uid}, {"_id": 0})
+    jsoneada = json.jsonify(list(query))
+    return jsoneada
+
+
 if __name__ == "__main__":
     app.run(debug=True)
