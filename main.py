@@ -245,5 +245,17 @@ def delete_message(id):
     mensajes.remove({"mid": id})
     return json.jsonify({"exito": True})
 
+
+@app.route("/user_id/", methods=['GET'])
+def get_user_id():
+
+    argumentos = request.args
+    name = argumentos["name"]
+    age = argumentos["age"]
+
+    user = usuarios.find({"name": name, "age": int(age)}, {"_id": 0})
+    return json.jsonify(list(user)[0]["uid"])
+
+
 if __name__ == "__main__":
     app.run(debug=True)
