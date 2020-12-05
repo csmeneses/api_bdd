@@ -254,7 +254,7 @@ def get_user_id():
     age = argumentos["age"]
 
     user = usuarios.find({"name": name, "age": int(age)}, {"_id": 0})
-    return json.jsonify(list(user))
+    return json.jsonify(list(user)[0]["uid"])
 
 
 if __name__ == "__main__":
