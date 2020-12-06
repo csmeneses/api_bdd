@@ -254,7 +254,11 @@ def get_user_id():
     age = argumentos["age"]
 
     user = usuarios.find({"name": name, "age": int(age)}, {"_id": 0})
-    return json.jsonify(list(user)[0]["uid"])
+    user = list(user)
+    if not user:
+        error = {"error": "usuario no existe"}
+        return json.jsonify(error)
+    return json.jsonify(user[0]["uid"])
 
 
 @app.route("/messages_receptant", methods=['GET'])
