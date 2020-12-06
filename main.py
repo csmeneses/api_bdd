@@ -11,6 +11,7 @@ URL = f"mongodb://{USER}:{PASS}@gray.ing.puc.cl/{DATABASE}?authSource=admin"
 client = MongoClient(URL)
 
 MESSAGE_KEYS = ["date", "lat", "long", "message", "receptant", "sender"]
+USER_KEYS = ["age", "description", "name"]
 
 db = client["grupo6"]
 
@@ -189,7 +190,7 @@ def text_search():
 
 
 @app.route("/messages", methods=['POST'])
-def create_user():
+def create_message():
 
     req = request.json
 
@@ -267,6 +268,26 @@ def get_messages_receptant():
     query = mensajes.find({"receptant": uid}, {"_id": 0})
     jsoneada = json.jsonify(list(query))
     return jsoneada
+
+
+@app.route("/create_user", methods=['POST'])
+def create_user():
+
+    req = request.json
+
+    if not req:
+        return json.jsonify({"error": "dame un input porfaaa"})
+
+    # Agregamos el uid que sea una unidad mayor al máximo
+    max_uid = usuarios.find({}, {"_id": 0, "uid": 1}).sort([("uid", -1)]).limit(1)
+    max_uid = max_uid[0]["uid"]
+    new_uid = max_uid + 1
+
+    data = {key: request.json[key] for key in USER_KEYS}
+    data["uid"] = new_uid
+    usuarios.insert_one(data)
+
+    return json.jsonify({"exito": True})
 
 
 if __name__ == "__main__":
