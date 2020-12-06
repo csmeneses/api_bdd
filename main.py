@@ -188,6 +188,65 @@ def text_search():
         return get_messages()
 
 
+@app.route("/text-search-receptant", methods=['GET'])
+def text_search_receptant():
+    # mensajes.createIndex({"message": "text"}, {"default_language": "none"})  SE IMPLEMENTÓ DIRECTO EN LA DB
+    desired = []
+    required = []
+    forbidden = []
+    uid = None
+
+    if request.data:
+        req = request.json
+        if "desired" in req.keys():
+            desired = req["desired"]
+        if "required" in req.keys():
+            required = req["required"]
+        if "forbidden" in req.keys():
+            forbidden = req["forbidden"]
+        if "userId" in req.keys():
+            uid = int(req["userId"])
+            if not check_uid(uid):
+                error = {"exito": False, "error": "userId no existe"}
+                return json.jsonify(error)
+        
+        if not desired and not required and not forbidden:
+            if type(uid) != int:
+                return get_messages()
+            elif type(uid) == int:
+                query = mensajes.find({"receptant": uid}, {"_id": 0})
+                return json.jsonify(list(query))
+
+        # Realizamos la consulta
+        texto = []
+        if desired:
+            texto.extend(desired)
+        if required:
+            required_bkn = [f'\"{requi}\"' for requi in required]
+            texto.extend(required_bkn)
+        if forbidden:
+            forbidden_bkn = [f"-{forbi}" for forbi in forbidden]
+            texto.extend(forbidden_bkn)
+            if not desired and not required:
+                prohibidas = " ".join(forbidden)
+                mids_malos = mensajes.find({"$text": {"$search": prohibidas}}, {"mid": 1, "_id": 0})
+                mids_malos = [mid["mid"] for mid in mids_malos]
+                if type(uid) == int:
+                    query = mensajes.find({"$and": [{"receptant": uid}, {"mid": {"$nin": list(mids_malos)}}]}, {"_id": 0})
+                else:
+                    query = mensajes.find({"mid": {"$nin": list(mids_malos)}}, {"_id": 0})
+                return json.jsonify(list(query))
+
+        mucho_texto = " ".join(texto)
+        if type(uid) == int:
+            query = mensajes.find({"$and": [{"receptant": uid}, {"$text": {"$search": mucho_texto}}]}, {"_id": 0, "score": { "$meta": "textScore" }}).sort([('score', {'$meta': 'textScore'})])
+        else:
+            query = mensajes.find({"$text": {"$search": mucho_texto}}, {"_id": 0, "score": { "$meta": "textScore" }}).sort([('score', {'$meta': 'textScore'})])
+        
+        return json.jsonify(list(query))
+    else:
+        return get_messages()
+
 
 @app.route("/messages", methods=['POST'])
 def create_message():
